@@ -1,9 +1,9 @@
 openapi: 3.1.0
 servers:
+  - url: https://ground.fly.dev/
+    description: Main server
   - url: http://localhost:3000/
     description: Dev server
-  - url: https://www.ground.dev/
-    description: Main server
     
 info:
   title: Ground's API
@@ -22,7 +22,7 @@ info:
   x-logo:
     url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMS7PEwClnFWa8NqF1ZB5CArGuNwcWc2Bc55Yk-ScuTQ&s
 # definitions:
-#   handlers.IndexedDocument:
+#   IndexedDocument:
 #     properties:
 #       etag:
 #         type: string
@@ -52,7 +52,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/handlers.IndexedDocument'
+                  $ref: '#/components/schemas/IndexedDocument'
     post:
       description: |+
         Upload and embed a document.
@@ -98,23 +98,25 @@ paths:
                 title: default success response
   /api/search/rrf:
     get:
+      summary: Hybrid Search
       description: |+
         Get ranked results.
+      operationId: getHybridSearchResults
       parameters:
-      - in: query
-        name: query
+      - name: query
+        in: query
+        description: User query
+        required: true
         schema:
           type: string
-        required: true
-        description: User query
+          style: simple
       responses:
         "200":
           description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                $ref: '#/components/schemas/handlers.SearchResponse'
+                $ref: '#/components/schemas/SearchResponse'
   /api/prompt:
     get:
       description: |+
@@ -137,30 +139,37 @@ paths:
 components:
   securitySchemes:
     bearerToken:            # arbitrary name for the security scheme
+      description: API key with bearer token format
       type: http
       scheme: bearer
+      bearerFormat: string
   schemas:                  # create types here so paths is readable
-    handlers.IndexedDocument:
+    IndexedDocument:
       type: object
       properties: 
-        etag: 
+        etag:
           type: string
-        key: 
+        key:
           type: string
-        indexed: 
+        indexed:
           type: boolean
         lastModifiedAt: 
           type: string
-    handlers.SearchResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        score:
-          type: float
-        payload:
-          type: object
-          additionalProperties:
+          format: date
+    SearchResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
             type: string
-            
-
+            format: uuid
+          score:
+            type: number
+          payload:
+            type: object
+            properties:
+              chunk:
+                type: string
+              parent_document_key:
+                type: string

@@ -17,8 +17,8 @@ info:
     For instance you can list all documents for an account via GET `https://www.ground.dev/api/documents`.
   contact:
     name: Ground's contact
-    email: contact@gmail.com
-    x-twitter: Ground
+    email: contact@ground.dev
+    # x-twitter: Ground
   x-logo:
     url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMS7PEwClnFWa8NqF1ZB5CArGuNwcWc2Bc55Yk-ScuTQ&s
 security:
@@ -27,9 +27,10 @@ tags: []
 paths:
   /api/documents:
     get:
+      summary: List Documents
       description: |+
         List all the documents that have been uploaded by an account.
-      operationId: documents
+      operationId: ListDocuments
       responses:
         "200":
           description: Successful response
@@ -40,8 +41,10 @@ paths:
                 items:
                   $ref: '#/components/schemas/IndexedDocument'
     post:
+      summary: Upload Document
       description: |+
         Upload and embed a document.
+      operationId: UploadDocument
       requestBody:
         required: true
         content:
@@ -63,31 +66,31 @@ paths:
                   - "OK"
                 title: default success response
     delete:
+      summary: Delete Document
       description: |+
         Delete a document by name.
+      operationId: DeleteDocument
       parameters:
-      - in: query
-        name: documents
-        schema:
-          type: string
+      - name: documents
+        in: query
         required: true
         description: File to delete
+        schema:
+          type: string
       responses:
         "204":
           description: Successful response
           content:
             application/json:
               schema:
-                type: string
-                enum:
-                  - "No Content"
+                type: object
                 title: default success response
   /api/search/rrf:
     get:
       summary: Hybrid Search
       description: |+
         Get ranked results.
-      operationId: getHybridSearchResults
+      operationId: HybridSearchRRF
       parameters:
       - name: query
         in: query
@@ -105,15 +108,18 @@ paths:
                 $ref: '#/components/schemas/SearchResponse'
   /api/prompt:
     get:
+      summary: Prompt
       description: |+
         Get answer to prompt.
+      operationId: QAPrompt
       parameters:
-      - in: query
-        name: query
+      - name: query
+        in: query
+        description: User query
         required: true
         schema:
           type: string
-        description: User query
+          style: simple
       responses:
         "200":
           description: Successful response
@@ -135,13 +141,14 @@ components:
       properties: 
         etag:
           type: string
+          format: uuid
         key:
           type: string
         indexed:
           type: boolean
         lastModifiedAt: 
           type: string
-          format: date
+          format: date-time
     SearchResponse:
       type: array
       items:

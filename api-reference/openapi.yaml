@@ -1,0 +1,161 @@
+openapi: 3.1.0
+servers:
+  - url: https://ground.fly.dev/
+    description: Main server
+  - url: http://localhost:3000/
+    description: Dev server
+    
+info:
+  title: Ground's API
+  version: 0.0.0
+  description: |-
+    Ground's description in [CommonMark](http://commonmark.org/help/) or HTML.
+
+    The Ground API allows developers to create RAGs. To learn how to get your credentials and create private/public applications, read our [Authorization Guide](https://www.ground.dev/Auth).
+    All endpoints are available via `https` and are located at `www.ground.dev/api/`.
+
+    For instance you can list all documents for an account via GET `https://www.ground.dev/api/documents`.
+  contact:
+    name: Ground's contact
+    email: contact@gmail.com
+    x-twitter: Ground
+  x-logo:
+    url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMS7PEwClnFWa8NqF1ZB5CArGuNwcWc2Bc55Yk-ScuTQ&s
+security:
+  - bearerToken: []
+tags: []
+paths:
+  /api/documents:
+    get:
+      description: |+
+        List all the documents that have been uploaded by an account.
+      operationId: documents
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IndexedDocument'
+    post:
+      description: |+
+        Upload and embed a document.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                document:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - "OK"
+                title: default success response
+    delete:
+      description: |+
+        Delete a document by name.
+      parameters:
+      - in: query
+        name: documents
+        schema:
+          type: string
+        required: true
+        description: File to delete
+      responses:
+        "204":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+                enum:
+                  - "No Content"
+                title: default success response
+  /api/search/rrf:
+    get:
+      summary: Hybrid Search
+      description: |+
+        Get ranked results.
+      operationId: getHybridSearchResults
+      parameters:
+      - name: query
+        in: query
+        description: User query
+        required: true
+        schema:
+          type: string
+          style: simple
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  /api/prompt:
+    get:
+      description: |+
+        Get answer to prompt.
+      parameters:
+      - in: query
+        name: query
+        required: true
+        schema:
+          type: string
+        description: User query
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    bearerToken:            # arbitrary name for the security scheme
+      description: API key with bearer token format
+      type: http
+      scheme: bearer
+      bearerFormat: string
+  schemas:                  # create types here so paths is readable
+    IndexedDocument:
+      type: object
+      properties: 
+        etag:
+          type: string
+        key:
+          type: string
+        indexed:
+          type: boolean
+        lastModifiedAt: 
+          type: string
+          format: date
+    SearchResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+            format: uuid
+          score:
+            type: number
+          payload:
+            type: object
+            properties:
+              chunk:
+                type: string
+              parent_document_key:
+                type: string

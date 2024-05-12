@@ -21,20 +21,6 @@ info:
     x-twitter: Ground
   x-logo:
     url: https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMS7PEwClnFWa8NqF1ZB5CArGuNwcWc2Bc55Yk-ScuTQ&s
-# definitions:
-#   IndexedDocument:
-#     properties:
-#       etag:
-#         type: string
-#       indexed:
-#         type: boolean
-#       key:
-#         type: string
-#       lastModifiedAt:
-#         type: string
-#     type: object
-
-# host: localhost:3000
 security:
   - bearerToken: []
 tags: []

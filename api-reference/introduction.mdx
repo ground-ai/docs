@@ -13,9 +13,9 @@ description: 'Example section for showcasing API endpoints'
 There are two ways to build API documentation: [OpenAPI](https://mintlify.com/docs/api-playground/openapi/setup) and [MDX components](https://mintlify.com/docs/api-playground/mdx/configuration). For the starter kit, we are using the following OpenAPI specification.
 
 <Card
-  title="Plant Store Endpoints"
+  title="Ground Endpoints"
   icon="leaf"
-  href="https://github.com/mintlify/starter/blob/main/api-reference/openapi.json"
+  href="https://github.com/ground-ai/docs/blob/main/api-reference/openapi.yaml"
 >
   View the OpenAPI specification file
 </Card>
@@ -23,11 +23,12 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 ## Authentication
 
 All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+The token in the Bearer token is the api_key you can get from https://platform.ground.dev/dashboard/api-keys.
 
 ```json
 "security": [
   {
-    "bearerAuth": []
+    "Authorization": "Bearer <token>"
   }
 ]
 ```

@@ -25,7 +25,7 @@ security:
   - bearerToken: []
 tags: []
 paths:
-  /api/documents:
+  "/api/documents":
     get:
       summary: List Documents
       description: |+
@@ -85,7 +85,7 @@ paths:
               schema:
                 type: object
                 title: default success response
-  /api/search/rrf:
+  "/api/search/rrf":
     get:
       summary: Hybrid Search
       description: |+
@@ -106,7 +106,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchResponse'
-  /api/prompt:
+  "/api/prompt":
     get:
       summary: Prompt
       description: |+

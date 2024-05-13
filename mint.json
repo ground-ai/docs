@@ -1,18 +1,20 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
-  "openapi": ["/api-reference/openapi.yaml"],
+  "name": "Ground",
+  "openapi": [
+    "/api-reference/openapi.yaml"
+  ],
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
+    "primary": "#3b82f6",
     "light": "#07C983",
     "dark": "#0D9373",
     "anchors": {
-      "from": "#0D9373",
+      "from": "#3b82f6",
       "to": "#07C983"
     }
   },
@@ -24,7 +26,7 @@
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://platform.ground.dev/dashboard"
   },
   "tabs": [
     {

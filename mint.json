@@ -1,7 +1,12 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Ground",
-  "openapi": "/api-reference/openapi.yaml",
+  "openapi": ["/openapi.yaml"],
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-PK9EREY6X0"
+    }
+  },
   "logo": {
     "dark": "/logo/dark.svg",
     "light": "/logo/light.svg"

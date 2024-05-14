@@ -16,6 +16,12 @@
       "to": "#07C983"
     }
   },
+  "api": {
+    "baseUrl": "https://platform.bound.dev/api",
+    "auth": {
+      "method": "bearer"
+    }
+  },
   "topbarLinks": [
     {
       "name": "Support",

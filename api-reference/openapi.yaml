@@ -71,7 +71,7 @@ paths:
         Delete a document by name.
       operationId: DeleteDocument
       parameters:
-      - name: documents
+      - name: filename
         in: query
         required: true
         description: File to delete

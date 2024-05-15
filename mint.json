@@ -1,7 +1,9 @@
 {
   "$schema": "https://mintlify.com/schema.json",
   "name": "Ground",
-  "openapi": ["/openapi.yaml"],
+  "openapi": [
+    "/openapi.yaml"
+  ],
   "analytics": {
     "ga4": {
       "measurementId": "G-PK9EREY6X0"
@@ -87,13 +89,17 @@
       ]
     },
     {
-      "group": "Endpoints",
+      "group": "Documents",
       "pages": [
         "api-reference/endpoint/list-documents",
-        "api-reference/endpoint/prompt",
-        "api-reference/endpoint/hybrid-search",
         "api-reference/endpoint/upload-document",
         "api-reference/endpoint/delete-document"
+      ]
+    },
+    {
+      "group": "Search",
+      "pages": [
+        "api-reference/endpoint/hybrid-search"
       ]
     }
   ],

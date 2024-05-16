@@ -9,10 +9,6 @@
       "measurementId": "G-PK9EREY6X0"
     }
   },
-  "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
-  },
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#3b82f6",
@@ -40,6 +36,10 @@
     "url": "https://platform.ground.dev/dashboard"
   },
   "tabs": [
+    {
+      "name": "Guides",
+      "url": "guides"
+    },
     {
       "name": "API Reference",
       "url": "api-reference"
@@ -79,7 +79,14 @@
         "essentials/images",
         "essentials/settings",
         "essentials/navigation",
-        "essentials/reusable-snippets"
+        "essentials/reusable-snippets",
+        "essentials/faq"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/introduction"
       ]
     },
     {

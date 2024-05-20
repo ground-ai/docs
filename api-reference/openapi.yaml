@@ -1,6 +1,6 @@
 openapi: 3.1.0
 servers:
-  - url: https://ground.fly.dev/
+  - url: https://platform.ground.dev
     description: Main server
   - url: http://localhost:3000/
     description: Dev server

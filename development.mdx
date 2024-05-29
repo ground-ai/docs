@@ -2,97 +2,129 @@
 title: 'Development'
 description: 'Learn how to preview changes locally'
 ---
+In this guide, you will use Python with the Ground API to create the following functions:
+  1. upload documents to the RAG
+  2. query against the documents to obtain similarity rankings
+  3. input the similarity ranking into an LLM to get an answer
+So let's get started.
 
-<Info>
-  **Prerequisite** You should have installed Node.js (version 18.10.0 or
-  higher).
-</Info>
+You will need an API key from Ground (get it by following the first 3 steps in [Quickstart](/quickstart)), and an API key from OpenAI.
 
-Step 1. Install Mintlify on your OS:
-
-<CodeGroup>
-
-```bash npm
-npm i -g mintlify
+### 1. Upload documents
+First thing, you'll need requests to make API calls.<br />
+```
+pip install requests
 ```
 
-```bash yarn
-yarn global add mintlify
+Let's create a first file, upload_document.py:
+
+```py upload_document.py
+import requests
+
+def upload_document(file_path, token):
+    URL = "https://platform.ground.dev/api/documents"
+    
+    with open(file_path, 'rb') as file:
+        files = {'document': file}
+        headers = {
+            'Authorization': f'Bearer {token}'
+        }
+        
+        response = requests.post(URL, headers=headers, files=files)
+    
+    # Check if the upload was successful
+    if response.status_code == 200:
+        print("File uploaded successfully.")
+        print("Response:", response.text)
+    else:
+        print("Failed to upload file.")
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
+
+if __name__ == "__main__":
+    FILE_PATH = "path/to/file"
+    TOKEN = "your_Ground_api_key"
+    
+    upload_document(FILE_PATH, TOKEN)
+    ```
+You're able to upload most kind of text documents to Ground.<br />
+They will be [embedded](https://www.elastic.co/what-is/word-embedding) and saved on our platform.
+
+### 2. Get the RAG ranking
+Now that you can upload files, let's query information from them!
+For this part, let's use OpenAI (you can replace by whatever model you want).
+```
+pip install openai
 ```
 
-</CodeGroup>
+Create a search_documents.py file.<br />
+And our first function in this file will use the /search/rrf endpoint from Ground's API.<br />
+It will search for matches against your query, in the files you uploaded to our database. And will return a list of answers.
 
-Step 2. Go to the docs are located (where you can find `mint.json`) and run the following command:
+```py search_documents.py
+import requests
+import json
+import openai
 
-```bash
-mintlify dev
+def search_rrf(query, token):
+    GROUND_URL = "https://platform.ground.dev/api"
+    
+    headers = {
+        'Authorization': f'Bearer {token}'
+    }
+    params = {
+        'query': query
+    }
+    
+    search_url = GROUND_URL + "/search/rrf"
+    response = requests.get(search_url, headers=headers, params=params)
+    
+    # Check if the request was successful
+    if response.status_code == 200:
+        try:
+            return response.text
+        except ValueError:
+            print("Error: Response is not in JSON format.")
+    else:
+        print("Failed to perform search.")
+        print("Status Code:", response.status_code)
+        print("Response:", response.text)
 ```
 
-The documentation website is now available at `http://localhost:3000`.
+### 3. Pass the rankings in OpenAI
+Now that Ground did it's job, and you have a ranked list with results, let's input this list into ChatGPT 3.5 and let it come up with a nicely formatted answer.
 
-### Custom Ports
 
-Mintlify uses port 3000 by default. You can use the `--port` flag to customize the port Mintlify runs on. For example, use this command to run in port 3333:
+```py search_documents.py
+def answer_with_ranking(rag_rankings, query):
+    client = openai.OpenAI(
+        api_key="your_OpenAI_api_key"
+    )
+    # Call OpenAI's API with the prompts
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": f"Use the following information to answer the query: '{rag_rankings}'\n\n"},
+            {"role": "system", "content": "Answer the query and cite the parent_document_key at the end of the answer."},
+            {"role": "user", "content": f"'{query}'\n\n"},
+        ],
+        max_tokens=200,  # Adjust as needed
+        n=1,
+        stop=None,
+        temperature=0.8
+    )
+    
+    # Extract the generated answer
+    return response.choices[0].message.content
 
-```bash
-mintlify dev --port 3333
+if __name__ == "__main__":
+    # Example query and token
+    query = "put_your_question_here"
+    GROUND_API_KEY = "your_Ground_api_key"
+    
+    # Call the search function and turn the JSON answer into an object
+    rag_rankings = json.loads(search_rrf(query, GROUND_API_KEY))
+
+    answer = answer_with_ranking(rag_rankings, query)
+    print(answer)
 ```
-
-You will see an error like this if you try to run Mintlify in a port that's already taken:
-
-```md
-Error: listen EADDRINUSE: address already in use :::3000
-```
-
-## Mintlify Versions
-
-Each CLI is linked to a specific version of Mintlify. Please update the CLI if your local website looks different than production.
-
-<CodeGroup>
-
-```bash npm
-npm i -g mintlify@latest
-```
-
-```bash yarn
-yarn global upgrade mintlify
-```
-
-</CodeGroup>
-
-## Deployment
-
-<Tip>
-  Unlimited editors available under the [Startup
-  Plan](https://mintlify.com/pricing)
-</Tip>
-
-You should see the following if the deploy successfully went through:
-
-<Frame>
-  <img src="/images/checks-passed.png" style={{ borderRadius: '0.5rem' }} />
-</Frame>
-
-## Troubleshooting
-
-Here's how to solve some common problems when working with the CLI.
-
-<AccordionGroup>
-  <Accordion title="Mintlify is not loading">
-    Update to Node v18. Run `mintlify install` and try again.
-  </Accordion>
-  <Accordion title="No such file or directory on Windows">
-Go to the `C:/Users/Username/.mintlify/` directory and remove the `mint`
-folder. Then Open the Git Bash in this location and run `git clone
-https://github.com/mintlify/mint.git`.
-
-Repeat step 3.
-
-  </Accordion>
-  <Accordion title="Getting an unknown error">
-    Try navigating to the root of your device and delete the ~/.mintlify folder.
-    Then run `mintlify dev` again.
-  </Accordion>
-</AccordionGroup>
-
-Curious about what changed in a CLI version? [Check out the CLI changelog.](/changelog/command-line)

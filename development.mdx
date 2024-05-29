@@ -107,8 +107,13 @@ def answer_with_ranking(rag_rankings, query):
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": f"Use the following information to answer the query: '{rag_rankings}'\n\n"},
-            {"role": "system", "content": "Answer the query and cite the parent_document_key at the end of the answer."},
+            {"role": "system", "content": "You are a customer support agent, helping users by following directives and answering questions.\n"},
+            {"role": "system", "content": "Get your answer from context, the right answer is in one of the chunks.\n"},
+            {"role": "system", "content": "Remove duplicate content.\n"},
+            {"role": "system", "content": "Your response is a quote from source with relevant informations.\n"},
+            {"role": "system", "content": "Only show the final response, do not provide explanations or details.\n"},
+            {"role": "system", "content": "Provide the source document at the end of the response, as follows: source: <parent_document_key>.\n"},
+            {"role": "system", "content": f"Context: '{rag_rankings}'\n\n"},
             {"role": "user", "content": f"'{query}'\n\n"},
         ],
         max_tokens=200,

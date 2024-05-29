@@ -1,6 +1,6 @@
 ---
 title: 'Development'
-description: 'Learn how to preview changes locally'
+description: 'Learn how to use Ground API'
 ---
 In this guide, you will use Python with the Ground API to create the following functions:
   1. upload documents to the RAG
@@ -51,15 +51,15 @@ You're able to upload most kind of text documents to Ground.<br />
 They will be [embedded](https://www.elastic.co/what-is/word-embedding) and saved on our platform.
 
 ### 2. Get the RAG ranking
-Now that you can upload files, let's query information from them!
-For this part, let's use OpenAI (you can replace by whatever model you want).
+Now that you can upload files, let's query information from them!<br />
+For this example, let's use OpenAI (but you can use whatever model you want).
 ```
 pip install openai
 ```
 
 Create a search_documents.py file.<br />
-And our first function in this file will use the /search/rrf endpoint from Ground's API.<br />
-It will search for matches against your query, in the files you uploaded to our database. And will return a list of answers.
+Our first function in this file will use the [/search/rrf](/api-reference/endpoint/hybrid-search) endpoint from Ground's API.<br />
+It will find matches for your query in the files you uploaded, and return a list of answers.
 
 ```py search_documents.py
 import requests
@@ -92,15 +92,18 @@ def search_rrf(query, token):
 ```
 
 ### 3. Pass the rankings in OpenAI
-Now that Ground did it's job, and you have a ranked list with results, let's input this list into ChatGPT 3.5 and let it come up with a nicely formatted answer.
-
+Now that Ground did it's job, and you have a ranked list with results, input this list into ChatGPT 3.5 and let it come up with a nicely formatted answer.<br />
+For reference, here is the OpenAI [documentation](https://platform.openai.com/docs/overview), and get your OpenAI API Key [here](https://platform.openai.com/docs/quickstart/account-setup).
+<br />
+The second function in search_documents.py takes the ranking results from Ground, and pass them to ChatGPT.<br />
+ChatGPT will use the rankings to come up with the answer to your question.<br />
+The prompt is very basic, asking to use the informations provided by the ranking, and to cite the parent_document_key.<br />
 
 ```py search_documents.py
 def answer_with_ranking(rag_rankings, query):
     client = openai.OpenAI(
         api_key="your_OpenAI_api_key"
     )
-    # Call OpenAI's API with the prompts
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
@@ -108,13 +111,13 @@ def answer_with_ranking(rag_rankings, query):
             {"role": "system", "content": "Answer the query and cite the parent_document_key at the end of the answer."},
             {"role": "user", "content": f"'{query}'\n\n"},
         ],
-        max_tokens=200,  # Adjust as needed
+        max_tokens=200,
         n=1,
         stop=None,
         temperature=0.8
     )
     
-    # Extract the generated answer
+    # Extract the first generated answer
     return response.choices[0].message.content
 
 if __name__ == "__main__":
@@ -128,3 +131,14 @@ if __name__ == "__main__":
     answer = answer_with_ranking(rag_rankings, query)
     print(answer)
 ```
+
+And voila!<br />
+You have a working ChatGPT using the context you provided to it.<br />
+You can change the code to use open source, fine tuned, or other models.<br />
+Modify and play around with the prompts to get results that fit your needs.<br />
+<Info>Storing the different keys in a .env file or secret manager is recommended.
+Don't share them online.</Info>
+But that's the gist of it.
+<br />
+Thank you for following this tutorial.<br />
+If you have questions feel free to contact us.

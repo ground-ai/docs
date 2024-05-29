@@ -95,7 +95,8 @@
     {
       "group": "Search",
       "pages": [
-        "api-reference/endpoint/hybrid-search"
+        "api-reference/endpoint/hybrid-search",
+        "api-reference/endpoint/dense-search"
       ]
     }
   ],

@@ -59,7 +59,7 @@ paths:
         "200":
           description: Successful response
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
                 enum:
@@ -80,17 +80,33 @@ paths:
       responses:
         "204":
           description: Successful response
-          content:
-            application/json:
-              schema:
-                type: object
-                title: default success response
   "/api/search/rrf":
     get:
       summary: Hybrid Search
       description: |+
         Get ranked results.
       operationId: HybridSearchRRF
+      parameters:
+      - name: query
+        in: query
+        description: User query
+        required: true
+        schema:
+          type: string
+          style: simple
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResponse'
+  "/api/search/dense":
+    get:
+      summary: Dense Search
+      description: |+
+        Get ranked results.
+      operationId: DenseSearchRankings
       parameters:
       - name: query
         in: query

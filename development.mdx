@@ -30,7 +30,7 @@ def upload_document(file_path, token):
             'Authorization': f'Bearer {token}'
         }
         
-        response = requests.post(URL, headers=headers, files=files)
+        response = requests.request("POST", URL, headers=headers, files=files)
     
     # Check if the upload was successful
     if response.status_code == 200:
@@ -77,7 +77,7 @@ def search_rrf(query, token):
     }
     
     search_url = GROUND_URL + "/search/rrf"
-    response = requests.get(search_url, headers=headers, params=params)
+    response = requests.request("GET", search_url, headers=headers, params=params)
     
     # Check if the request was successful
     if response.status_code == 200:

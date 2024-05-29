@@ -43,7 +43,7 @@ def upload_document(file_path, token):
 
 if __name__ == "__main__":
     FILE_PATH = "path/to/file"
-    TOKEN = "your_Ground_api_key"
+    TOKEN = "your_ground_api_key"
     
     upload_document(FILE_PATH, TOKEN)
     ```
@@ -102,7 +102,7 @@ The prompt is very basic, asking to use the informations provided by the ranking
 ```py search_documents.py
 def answer_with_ranking(rag_rankings, query):
     client = openai.OpenAI(
-        api_key="your_OpenAI_api_key"
+        api_key="your_openai_api_key"
     )
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
@@ -128,7 +128,7 @@ def answer_with_ranking(rag_rankings, query):
 if __name__ == "__main__":
     # Example query and token
     query = "put_your_question_here"
-    GROUND_API_KEY = "your_Ground_api_key"
+    GROUND_API_KEY = "your_ground_api_key"
     
     # Call the search function and turn the JSON answer into an object
     rag_rankings = json.loads(search_rrf(query, GROUND_API_KEY))

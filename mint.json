@@ -5,8 +5,8 @@
     "/openapi.yaml"
   ],
   "analytics": {
-    "ga4": {
-      "measurementId": "G-PK9EREY6X0"
+    "gtm": {
+      "tagId": "GTM-WCDBQRF2"
     }
   },
   "favicon": "/favicon.png",
